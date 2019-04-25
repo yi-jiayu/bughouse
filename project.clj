@@ -1,6 +1,6 @@
 (defproject bughouse "0.1.0-SNAPSHOT"
-  :description "FIXME: write this!"
-  :url "http://example.com/FIXME"
+  :description "Realtime multiplayer bughouse xiangqi"
+  :url "https://xiangqi.jiayu.io/"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 

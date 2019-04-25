@@ -1,10 +1,11 @@
 # bughouse
 
-FIXME: Write a one-line description of your library/project.
+Realtime multiplayer [bughouse](https://en.wikipedia.org/wiki/Bughouse_chess) xiangqi
 
 ## Overview
 
-FIXME: Write a paragraph about the library/project and highlight its goals.
+While it is easy to play bughouse chess online, bughouse xiangqi is less common. This project aims
+to be a way for bughouse xiangqi enthusiasts to play with each other.
 
 ## Development
 
