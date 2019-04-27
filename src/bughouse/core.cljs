@@ -30,6 +30,8 @@
 
 (defonce turn-colour (r/cursor state [:turn-colour]))
 
+(defonce game-state (r/cursor state [:game-state]))
+
 (defn handle-click
   [state i j]
   (cond
@@ -62,13 +64,17 @@
 
 (defn board
   [position selected]
-  (let [selected-coords @selected
+  (let [game-state @game-state
+        selected-coords @selected
         allowed-moves (valid-moves @position selected-coords)]
     [:div {:class "board" :data-turn @turn-colour :data-action (if (nil? selected-coords) "picking" "placing")}
      (map-indexed
        (fn [i row]
          (map-indexed (fn [j piece]
-                        ^{:key [i, j, piece]} [square piece (= selected-coords [i j]) (allowed-moves [i j]) #(handle-click state i j)])
+                        ^{:key [i, j, piece]} [square piece
+                                               (= selected-coords [i j])
+                                               (allowed-moves [i j])
+                                               (when (= :in-progress game-state) #(handle-click state i j))])
                       row))
        @position)]))
 
@@ -84,9 +90,9 @@
 
 (defn table
   []
-  [:div {:class "table"}
+  [:div {:class "table" :data-game-state @game-state :data-local-player (:local-player @state)}
    [:div [seat :r] [seat :b]]
-   [board board-position selected turn-colour]])
+   [board board-position selected]])
 
 (defn app
   []

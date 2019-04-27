@@ -2,7 +2,7 @@
 (ns bughouse.test-runner
   (:require
     ;; require all the namespaces that you want to test
-    ;[bughouse.core-test]
+    [bughouse.core-test]
     [bughouse.moves-test]
     [figwheel.main.testing :refer [run-tests-async]]))
 
