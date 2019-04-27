@@ -16,10 +16,13 @@
                                 ["" "" "" "" "" "" "" "" ""]
                                 ["rR" "rH" "rE" "rA" "rG" "rA" "rE" "rH" "rR"]])
 
-(defonce state (r/atom {:position    starting-position
-                        :game-state  :waiting-for-players
-                        :players     {}
-                        :turn-colour :r}))
+(defonce state (r/atom {:position     starting-position
+                        :game-state   :waiting-for-players
+                        :players      {:r nil
+                                       :b "Marken"}
+                        :turn-colour  :r
+
+                        :local-player nil}))
 
 (defonce board-position (r/cursor state [:position]))
 
@@ -38,10 +41,12 @@
   (let [name (.prompt js/window "What is your name?")]
     (swap! state
            (fn [state colour name] (let [state (assoc-in state [:players colour] name)
+                                         state (assoc state :local-player colour)
                                          players (:players state)]
-                                     (case (count players)
-                                       1 (assoc state :game-state :waiting-for-other-player)
-                                       2 (assoc state :game-state :in-progress))))
+                                     ; start the game if we have two players
+                                     (if (= 2 (count players))
+                                       (assoc state :game-state :in-progress)
+                                       state)))
            colour name)))
 
 ;; -------------------------
@@ -70,17 +75,17 @@
 (defn seat
   [colour]
   [:div {:class "seat"}
-   [:div (case colour :red "Red" :black "Black")]
+   [:div (case colour :r "Red" :b "Black")]
    (if-let [name (get-in @state [:players colour])]
      name
-     (case (:game-state @state)
-       :waiting-for-players [:button {:on-click #(take-seat colour)} "Take seat"]
-       :waiting-for-other-player [:button {:disabled true} "Waiting for other player"]))])
+     (if (nil? (:local-player @state))
+       [:button {:on-click #(take-seat colour)} "Take seat"]
+       [:button {:disabled true} "Waiting for other player"]))])
 
 (defn table
   []
   [:div {:class "table"}
-   [:div [seat :red] [seat :black]]
+   [:div [seat :r] [seat :b]]
    [board board-position selected turn-colour]])
 
 (defn app
