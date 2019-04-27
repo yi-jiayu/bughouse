@@ -16,7 +16,10 @@
                                 ["" "" "" "" "" "" "" "" ""]
                                 ["rR" "rH" "rE" "rA" "rG" "rA" "rE" "rH" "rR"]])
 
-(defonce state (r/atom {:position starting-position :turn-colour :r}))
+(defonce state (r/atom {:position    starting-position
+                        :game-state  :waiting-for-players
+                        :players     {}
+                        :turn-colour :r}))
 
 (defonce board-position (r/cursor state [:position]))
 
@@ -29,6 +32,17 @@
   (cond
     (= (:selected @state) [i j]) (swap! state assoc :selected nil)
     (not= "" (get-in (:position @state) [i j])) (swap! state assoc :selected [i j])))
+
+(defn take-seat
+  [colour]
+  (let [name (.prompt js/window "What is your name?")]
+    (swap! state
+           (fn [state colour name] (let [state (assoc-in state [:players colour] name)
+                                         players (:players state)]
+                                     (case (count players)
+                                       1 (assoc state :game-state :waiting-for-other-player)
+                                       2 (assoc state :game-state :in-progress))))
+           colour name)))
 
 ;; -------------------------
 ;; Views
@@ -53,9 +67,25 @@
                       row))
        @position)]))
 
+(defn seat
+  [colour]
+  [:div {:class "seat"}
+   [:div (case colour :red "Red" :black "Black")]
+   (if-let [name (get-in @state [:players colour])]
+     name
+     (case (:game-state @state)
+       :waiting-for-players [:button {:on-click #(take-seat colour)} "Take seat"]
+       :waiting-for-other-player [:button {:disabled true} "Waiting for other player"]))])
+
+(defn table
+  []
+  [:div {:class "table"}
+   [:div [seat :red] [seat :black]]
+   [board board-position selected turn-colour]])
+
 (defn app
   []
-  [:div {:class "app"} [board board-position selected turn-colour]])
+  [table])
 
 (defn get-app-element []
   (gdom/getElement "app"))

@@ -9,13 +9,30 @@ body {
     padding: 0;
 }
 
-.app {
+#app {
     text-align: center;
     align-items: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-height: 100vh;
+}
+
+.table {
+    max-width: var(--max-board-width);
+}
+
+.seat {
+    display: inline-block;
+    width: 50%;
+}
+
+.board {
+    background-image: url('/svg/board.svg');
+    background-size: cover;
+    margin: 1em 0;
+    overflow: hidden;
+    width: 100%;
 }
 
 .square {
@@ -29,15 +46,6 @@ body {
     max-height: var(--max-piece-size);
     max-width: var(--max-piece-size);
     width: 10vw;
-}
-
-.board {
-    background-image: url('/svg/board.svg');
-    background-size: cover;
-    margin: 1em 0;
-    max-width: var(--max-board-width);
-    overflow: hidden;
-    width: 100%;
 }
 
 .drops {
