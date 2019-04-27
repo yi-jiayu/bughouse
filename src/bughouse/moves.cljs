@@ -24,9 +24,27 @@
                                [(vadd [1 0] location) (vadd [2 -1] location)]
                                [(vadd [1 0] location) (vadd [2 1] location)]]))))
 
+(defn valid-elephant-moves
+  [board location]
+  (into #{} (remove nil? (map (fn [[adj target]]
+                                (when (and (cond
+                                             (>= 4 (first location)) (>= 4 (first target))
+                                             (<= 5 (first location)) (<= 5 (first target)))
+                                           (= "" (get-in board adj)) ; adjacent square is empty
+                                           (let [target-square (get-in board target)]
+                                             ; target square is empty or contains an enemy piece
+                                             (or (= "" target-square)
+                                                 (enemy? target-square))))
+                                  target))
+                              [[(vadd [-1 -1] location) (vadd [-2 -2] location)]
+                               [(vadd [-1 1] location) (vadd [-2 2] location)]
+                               [(vadd [1 -1] location) (vadd [2 -2] location)]
+                               [(vadd [1 1] location) (vadd [2 2] location)]]))))
+
 (defn valid-moves
   "Returns the valid moves for a piece on a board."
   [board location]
   (case (second (get-in board location))
     "H" (valid-horse-moves board location)
+    "E" (valid-elephant-moves board location)
     #{}))
