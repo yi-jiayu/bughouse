@@ -18,6 +18,5 @@
             "fig:test"  ["run" "-m" "figwheel.main" "-co" "test.cljs.edn" "-m" bughouse.test-runner]}
 
   :profiles {:dev {:dependencies [[com.bhauman/figwheel-main "0.1.9"]
-                                  [com.bhauman/rebel-readline-cljs "0.1.4"]]
-                   }})
+                                  [com.bhauman/rebel-readline-cljs "0.1.4"]]}})
 
