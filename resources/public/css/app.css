@@ -4,6 +4,11 @@
     --max-piece-size: 50px;
 }
 
+body {
+    margin: 0;
+    padding: 0;
+}
+
 .app {
     text-align: center;
     align-items: center;
