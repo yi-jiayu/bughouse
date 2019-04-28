@@ -6,15 +6,15 @@
 
 ;; define your app data so that it doesn't get over-written on reload
 (defonce ^:const starting-position [["bR" "bH" "bE" "bA" "bG" "bA" "bE" "bH" "bR"]
-                                ["" "" "" "" "" "" "" "" ""]
-                                ["" "bC" "" "" "" "" "" "bC" ""]
-                                ["bP" "" "bP" "" "bP" "" "bP" "" "bP"]
-                                ["" "" "" "" "" "" "" "" ""]
-                                ["" "" "" "" "" "" "" "" ""]
-                                ["rP" "" "rP" "" "rP" "" "rP" "" "rP"]
-                                ["" "rC" "" "" "" "" "" "rC" ""]
-                                ["" "" "" "" "" "" "" "" ""]
-                                ["rR" "rH" "rE" "rA" "rG" "rA" "rE" "rH" "rR"]])
+                                    ["" "" "" "" "" "" "" "" ""]
+                                    ["" "bC" "" "" "" "" "" "bC" ""]
+                                    ["bP" "" "bP" "" "bP" "" "bP" "" "bP"]
+                                    ["" "" "" "" "" "" "" "" ""]
+                                    ["" "" "" "" "" "" "" "" ""]
+                                    ["rP" "" "rP" "" "rP" "" "rP" "" "rP"]
+                                    ["" "rC" "" "" "" "" "" "rC" ""]
+                                    ["" "" "" "" "" "" "" "" ""]
+                                    ["rR" "rH" "rE" "rA" "rG" "rA" "rE" "rH" "rR"]])
 
 (defonce state (r/atom {:position     starting-position
                         :game-state   :waiting-for-players
@@ -78,24 +78,23 @@
 
 (defn square
   [piece selected move-allowed on-click]
-  (let [attrs {:class         "square"
-               :data-piece    piece
-               :data-side     (first piece)
-               :data-selected (or selected move-allowed)
-               :on-click      on-click}]
-    [:div attrs]))
+  [:div.square {:data-piece    (when (seq piece) piece)
+                :data-side     (first piece)
+                :data-selected (when (or selected move-allowed) true)
+                :on-click      on-click}])
 
 (defn board
   [position selected]
   (let [game-state @game-state
-        allowed-moves (valid-moves position selected)]
+        valid-moves (when selected (valid-moves position selected))]
     [:div {:class "board" :data-action (if (nil? selected) "picking" "placing")}
      (map-indexed
        (fn [i row]
          (map-indexed (fn [j piece]
-                        ^{:key [i, j, piece]} [square piece
+                        ^{:key [i, j, piece]} [square
+                                               piece
                                                (= selected [i j])
-                                               (allowed-moves [i j])
+                                               (contains? valid-moves [i j])
                                                (when (= :in-progress game-state) #(handle-click state i j))])
                       row))
        position)]))
