@@ -27,6 +27,10 @@ body {
     width: 50%;
 }
 
+.game-state {
+    float: right;
+}
+
 .board {
     background-image: url('/svg/board.svg');
     background-size: cover;

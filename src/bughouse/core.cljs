@@ -19,7 +19,7 @@
 (defonce state (r/atom {:position     starting-position
                         :game-state   :waiting-for-players
                         :players      {:r nil
-                                       :b "Marken"}
+                                       :b "Jiayu"}
                         :turn-colour  :r
 
                         :local-player nil}))
@@ -117,7 +117,10 @@
         local-player (:local-player @state)]
     [:div {:class "table" :data-game-state game-state :data-local-player local-player}
      [:div [seat :r] [seat :b]]
-     [board position selected]]))
+     [board position selected]
+     [:div {:class "game-state"} (case game-state
+                                   :waiting-for-players "Waiting for players..."
+                                   :in-progress "In progress")]]))
 
 (defn app
   []
