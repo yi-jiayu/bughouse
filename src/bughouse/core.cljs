@@ -1,7 +1,7 @@
 (ns ^:figwheel-hooks bughouse.core
   (:require
     [goog.dom :as gdom]
-    [reagent.core :as r :refer [atom]]
+    [reagent.core :as r]
     [bughouse.moves :refer [valid-moves]]))
 
 ;; define your app data so that it doesn't get over-written on reload
@@ -32,10 +32,21 @@
 
 (defonce game-state (r/cursor state [:game-state]))
 
+(defn move-piece
+  [state to from]
+  (let [position (:position state)]
+    (-> state
+        (assoc-in (cons :position to) (get-in position from))
+        (assoc-in (cons :position from) "")
+        (assoc :selected nil))))
+
 (defn handle-click
   [state i j]
   (cond
     (= (:selected @state) [i j]) (swap! state assoc :selected nil)
+    (not (nil? (:selected @state))) (let [valid-dests (valid-moves @board-position @selected)]
+                                      (when (valid-dests [i j])
+                                        (swap! state move-piece [i j] @selected)))
     (not= "" (get-in (:position @state) [i j])) (swap! state assoc :selected [i j])))
 
 (defn take-seat
