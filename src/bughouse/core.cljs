@@ -45,14 +45,16 @@
   (let [selected @selected
         position @board-position
         turn-colour @turn-colour
-        local-player (:local-player @state)]
+        local-player (:local-player @state)
+        clicked (get-in position [i j])]
     (cond
       (= selected [i j]) (swap! state assoc :selected nil)
-      (not (nil? selected)) (when ((valid-moves position selected) [i j])
-                              (swap! state move-piece [i j] selected))
-      (let [piece (get-in position [i j])]
-        (and (not= "" piece)
-             (= turn-colour local-player (keyword (first piece))))) (swap! state assoc :selected [i j]))))
+      (not (nil? selected)) (if (= turn-colour local-player (keyword (first clicked)))
+                              (swap! state assoc :selected [i j])
+                              (when ((valid-moves position selected) [i j])
+                                (swap! state move-piece [i j] selected)))
+      (and (not= "" clicked)
+           (= turn-colour local-player (keyword (first clicked)))) (swap! state assoc :selected [i j]))))
 
 (defn take-seat
   [colour]
