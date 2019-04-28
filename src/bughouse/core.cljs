@@ -38,7 +38,11 @@
     (-> state
         (assoc-in (cons :position to) (get-in position from))
         (assoc-in (cons :position from) "")
-        (assoc :selected nil))))
+        (assoc :selected nil)
+        (update :turn-colour #(case % :r :b :b :r)))))
+
+;; -------------------------
+;; Actions
 
 (defn handle-click
   [state i j]
@@ -84,9 +88,8 @@
 (defn board
   [position selected]
   (let [game-state @game-state
-        allowed-moves (valid-moves position selected)
-        turn-colour @turn-colour]
-    [:div {:class "board" :data-turn turn-colour :data-action (if (nil? selected) "picking" "placing")}
+        allowed-moves (valid-moves position selected)]
+    [:div {:class "board" :data-action (if (nil? selected) "picking" "placing")}
      (map-indexed
        (fn [i row]
          (map-indexed (fn [j piece]
@@ -107,15 +110,17 @@
        name
        (if (nil? local-player)
          [:button {:on-click #(take-seat colour)} "Take seat"]
-         [:button {:disabled true} "Waiting for other player"]))]))
+         [:button {:disabled true} "Waiting for other player"]))
+     [:span {:class "turn-indicator" :data-side colour} " (*)"]]))
 
 (defn table
   []
   (let [game-state @game-state
         position @board-position
         selected @selected
-        local-player (:local-player @state)]
-    [:div {:class "table" :data-game-state game-state :data-local-player local-player}
+        local-player (:local-player @state)
+        turn-colour @turn-colour]
+    [:div {:class "table" :data-game-state game-state :data-local-player local-player :data-turn turn-colour}
      [:div [seat :r] [seat :b]]
      [board position selected]
      [:div {:class "game-state"} (case game-state

@@ -64,18 +64,18 @@ body {
     display: none;
 }
 
-[data-turn=r] .turn-indicator[data-side=r] {
+[data-game-state=in-progress][data-turn=r] .turn-indicator[data-side=r] {
     display: inline;
 }
 
-[data-turn=b] .turn-indicator[data-side=b] {
+[data-game-state=in-progress][data-turn=b] .turn-indicator[data-side=b] {
     display: inline;
 }
 
 @media (hover: hover) {
-    [data-game-state=in-progress][data-local-player=r] [data-turn=r][data-action=picking] .square[data-side=r]:hover,
-    [data-game-state=in-progress][data-local-player=b] [data-turn=b][data-action=picking] .square[data-side=b]:hover {
-    border: var(--piece-border-radius) solid red;
+    [data-game-state=in-progress][data-local-player=r][data-turn=r] [data-action=picking] .square[data-side=r]:hover,
+    [data-game-state=in-progress][data-local-player=b][data-turn=b] [data-action=picking] .square[data-side=b]:hover {
+        border: var(--piece-border-radius) solid red;
     }
 }
 
