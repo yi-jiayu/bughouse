@@ -67,10 +67,11 @@
 
 (defn square
   [piece selected move-allowed on-click]
-  (let [attrs {:class "square" :data-piece piece :on-click on-click}
-        attrs (if (not= "" piece) (assoc attrs :data-side (first piece)) attrs)
-        attrs (if selected (assoc attrs :data-selected true) attrs)
-        attrs (if move-allowed (assoc attrs :data-selected true) attrs)]
+  (let [attrs {:class         "square"
+               :data-piece    piece
+               :data-side     (first piece)
+               :data-selected (or selected move-allowed)
+               :on-click      on-click}]
     [:div attrs]))
 
 (defn board
